@@ -1,0 +1,111 @@
+ p := fmt.Println
+
+    // We'll start by getting the current time.
+    // now := time.Now()
+
+
+now := time.Now()
+// time.Date(2019, 8, 21, 9, 16, 58, 651387237, time.UTC)
+
+type TempMeasurement struct {
+	Timestamp	time.Time
+	Measurement float64
+}
+
+measurements := []TempMeasurement{}
+
+measure1 := TempMeasurement{}
+
+i := 1
+for i <= 240 {
+    if (i < 120) {
+        measure1 = TempMeasurement{Timestamp: now.Add(time.Second * time.Duration(-i)), Measurement: 100}
+    } else {
+        measure1 = TempMeasurement{Timestamp: now.Add(time.Second * time.Duration(-i)), Measurement: 200}
+    }
+
+	measurements = append(measurements, measure1)
+	i = i + 1
+}
+
+
+
+p("Now is: ",now)
+p("Measurments length: ", len(measurements))
+
+// Sort the measurements slice with in reverse chronological order
+// so [0] after(in time) [len - 1]
+sort.Slice(measurements, func(x, y int) bool {
+    return measurements[x].Timestamp.After(measurements[y].Timestamp)
+})
+
+p(measurements[0])
+p(measurements[len(measurements)-1])
+
+timeLimit := time.Minute * time.Duration(-2)
+
+p(timeLimit)
+
+z := 0
+mCount  := float64(z)
+tempSum := 0.00
+avgTemp := 0.00
+for z < len(measurements) {
+	if(measurements[z].Timestamp.Before(measurements[0].Timestamp.Add(timeLimit))) {
+        p("Stop Index: ", z)
+        p("Most Recent time is: ", measurements[0])
+        p("Last Measurement in window: ", measurements[z])
+        mCount = float64(z)
+        avgTemp = (tempSum-measurements[z].Measurement)/mCount
+        break
+    }
+    tempSum = tempSum + measurements[z].Measurement
+ 	z = z + 1
+}
+
+p("Average Temperature: ", avgTemp)
+
+
+
+    // then := time.Date(
+    //     2019, 8, 20, 9, 16, 58, 651387237, time.UTC)
+    // p("Then is: ",then)
+
+    // // You can extract the various components of the time
+    // // value as expected.
+    // p(then.Year())
+
+
+    // // These methods compare two times, testing if the
+    // // first occurs before, after, or at the same time
+    // // as the second, respectively.
+    // p("then before now?: ",then.Before(now))
+    // p("then after now?: ", then.After(now))
+    // p("then equal to now?: ", then.Equal(now))
+
+    // // The `Sub` methods returns a `Duration` representing
+    // // the interval between two times.
+    // diff := now.Sub(then)
+    // p(diff)
+
+    // // We can compute the length of the duration in
+    // // various units.
+    // p(diff.Hours())
+    // p(diff.Minutes())
+    // p(diff.Seconds())
+    // p(diff.Nanoseconds())
+
+    // subractionMniutes := time.Minute * 3
+
+    // p(subractionMniutes);
+
+    // // You can use `Add` to advance a time by a given
+    // // duration, or with a `-` to move backwards by a
+    // // duration.
+    // p(then.Add(diff))
+    // p(then.Add(-diff))
+
+
+    // p("Now is: ",now)
+    // p("Three minutes prior is: ", now.Add(-subractionMniutes))
+}
